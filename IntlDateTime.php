@@ -1,7 +1,8 @@
 <?php
 /**
  * IntlDateTime is an extented version of php 5 DateTime class with integrated
- * IntlDateFormatter functionality (needs php >= 5.3.0 or PECL intl >= 1.0.0)
+ * IntlDateFormatter functionality which adds support for multible calendars
+ * and locales provided by ICU project. (needs php >= 5.3.0 or PECL intl >= 1.0.0)
  * However, this class is not compatible with DateTime class because it uses ICU
  * pattern syntax for formatting and parsing date strings.
  * (@link http://userguide.icu-project.org/formatparse/datetime)
@@ -26,7 +27,7 @@ class IntlDateTime extends DateTime {
 	 *
 	 * @param mixed $time Unix timestamp or strtotime() compatible string or another DateTime object
 	 * @param mixed $timezone DateTimeZone object or timezone identifier as full name (e.g. Asia/Tehran) or abbreviation (e.g. IRDT).
-	 * @param string $calendar any calendar supported by ICU
+	 * @param string $calendar any calendar supported by ICU (e.g. gregorian, persian, islamic, ...)
 	 * @param string $locale any locale supported by ICU
 	 * @param string $pattern the date pattern in which $time is formatted.
 	 * @return IntlDateTime
@@ -245,7 +246,7 @@ class IntlDateTime extends DateTime {
 	 * @return IntlDateTime The modified DateTime.
 	 */
 	public function modify($modify) {
-		//TODO: support for modifications based on current calendar
+		//TODO: support for calendar-aware modifications
 		parent::modify($modify);
 		return $this;
 	}
