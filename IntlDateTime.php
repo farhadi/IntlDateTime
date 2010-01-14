@@ -65,15 +65,15 @@ class IntlDateTime extends DateTime {
 	 * @return string Latinized string
 	 */
 	protected function latinizeDigits($str) {
+		$result = '';
 		$num = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
-		$pos = 0;
-		while ($pos < strlen($str)) {
-			$oldpos = $pos;
-			$parsed = $num->parse($str, NumberFormatter::TYPE_INT32, $pos);
-			if ($pos == $oldpos) $pos++;
-			else $str = preg_replace('/^((?:.[\x80-\xBF]*){'.$oldpos.'})(?:.[\x80-\xBF]*){'.($pos - $oldpos).'}/', '${1}' . $parsed, $str, 1);
+		preg_match_all('/.[\x80-\xBF]*/', $str, $matches);
+		foreach ($matches[0] as $char) {
+			$pos = 0;
+			$parsedChar = $num->parse($char, NumberFormatter::TYPE_INT32, $pos);
+			$result .= $pos ? $parsedChar : $char;
 		}
-		return $str;
+		return $result;
 	}
 
 	/**
