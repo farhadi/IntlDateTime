@@ -188,7 +188,7 @@ class IntlDateTime extends DateTime {
 	public function set($time = null, $timezone = null, $pattern = null) {
 		if (is_a($time, 'DateTime')) {
 			$time = $time->format('U');
-		} elseif (!is_numeric($time)) {
+		} elseif (!is_numeric($time) || $pattern) {
 			if (!$pattern) {
 				$pattern = $this->guessPattern($time);
 			}
