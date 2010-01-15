@@ -11,7 +11,7 @@
  * @license     GNU General Public License 3.0 (http://www.gnu.org/licenses/gpl.html)
  */
 class IntlDateTime extends DateTime {
-	
+
 	/**
 	 * @var string The current locale in use
 	 */
@@ -186,19 +186,35 @@ class IntlDateTime extends DateTime {
 	 * @param string $pattern the date pattern in which $time is formatted.
 	 * @return IntlDateTime The modified DateTime.
 	 */
-	public function set($time = null, $timezone = null, $pattern = null) {
+	public function set($time, $timezone = null, $pattern = null) {
 		if (is_a($time, 'DateTime')) {
 			$time = $time->format('U');
 		} elseif (!is_numeric($time) || $pattern) {
 			if (!$pattern) {
 				$pattern = $this->guessPattern($time);
 			}
-			
+
+			if (!$pattern && preg_match('/((?:[+-]?\d+)|next|last|previous)\s*(year|month)s?/i', $time)) {
+				if (isset($timezone)) {
+					$tempTimezone = $this->getTimezone();
+					$this->setTimezone($timezone);
+				}
+
+				$this->setTimestamp(time());
+				$this->modify($time);
+
+				if (isset($timezone)) {
+					$this->setTimezone($tempTimezone);
+				}
+
+				return $this;
+			}
+
 			$timezone = empty($timezone) ? $this->getTimezone() : $timezone;
 			if (is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
 			$defaultTimezone = @date_default_timezone_get();
 			date_default_timezone_set($timezone);
-			
+
 			if ($pattern) {
 				$time = $this->getFormatter(array('timezone' => 'GMT', 'pattern' => $pattern))->parse($time);
 				$time -= date('Z', $time);
@@ -229,7 +245,7 @@ class IntlDateTime extends DateTime {
 
 	/**
 	 * Sets the timezone for the object.
-	 * 
+	 *
 	 * @param mixed $timezone DateTimeZone object or timezone identifier as full name (e.g. Asia/Tehran) or abbreviation (e.g. IRDT).
 	 * @return IntlDateTime The modified DateTime.
 	 */
@@ -240,14 +256,63 @@ class IntlDateTime extends DateTime {
 	}
 
 	/**
+	 * Internally used by modify method to calculate calendar-aware modifications
+	 *
+	 * @param array $matches
+	 * @return string An empty string
+	 */
+	protected function modifyCallback($matches) {
+		if (!empty($matches[1])) {
+			parent::modify($matches[1]);
+		}
+
+		list($y, $m, $d) = explode('-', $this->format('y-M-d'));
+		$change = strtolower($matches[2]);
+		$unit = strtolower($matches[3]);
+
+		switch ($change) {
+			case "next":
+				$change = 1;
+				break;
+
+			case "last":
+			case "previous":
+				$change = -1;
+				break;
+		}
+
+		switch ($unit) {
+			case "month":
+				$m += $change;
+				if ($m > 12) {
+					$y += floor($m/12);
+					$m = $m % 12;
+				} elseif ($m < 1) {
+					$y += ceil($m/12) - 1;
+					$m = $m % 12 + 12;
+				}
+				break;
+
+			case "year":
+				$y += $change;
+				break;
+		}
+
+		$this->setDate($y, $m, $d);
+
+		return '';
+	}
+
+	/**
 	 * Alter the timestamp by incrementing or decrementing in a format accepted by strtotime().
-	 * 
+	 *
 	 * @param string $modify a string in a relative format accepted by strtotime().
 	 * @return IntlDateTime The modified DateTime.
 	 */
 	public function modify($modify) {
-		//TODO: support for calendar-aware modifications
-		parent::modify($modify);
+		$modify = $this->latinizeDigits(trim($modify));
+		$modify = preg_replace_callback('/(.*?)((?:[+-]?\d+)|next|last|previous)\s*(year|month)s?/i', array($this, 'modifyCallback'), $modify);
+		if ($modify) parent::modify($modify);
 		return $this;
 	}
 
@@ -263,7 +328,7 @@ class IntlDateTime extends DateTime {
 			$tempTimezone = $this->getTimezone();
 			$this->setTimezone($timezone);
 		}
- 
+
 		$result = $this->getFormatter(array('timezone' => 'GMT'.parent::format('O'), 'pattern' => $pattern))->format($this->getTimestamp());
 
 		if (isset($timezone)) {
