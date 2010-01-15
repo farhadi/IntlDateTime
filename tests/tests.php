@@ -11,6 +11,10 @@ class IntlDateTimeTestCase extends UnitTestCase {
 		$result = $date->getTimestamp();
 		$this->assertEqual($result, $expected);
 
+		$date = new IntlDateTime('1431/01/27', 'Asia/Tehran', 'islamic-civil');
+		$result = $date->getTimestamp();
+		$this->assertEqual($result, $expected);
+
 		$date = new IntlDateTime('1388/10/23', 'Asia/Tehran', 'persian');
 		$result = $date->getTimestamp();
 		$this->assertEqual($result, $expected);
@@ -42,7 +46,7 @@ class IntlDateTimeTestCase extends UnitTestCase {
 		$this->assertEqual($result, '2010/01/13 12:42:20');
 	}
 
-	function testSet(){
+	function testSet() {
 		$date = new IntlDateTime('now', 'Asia/Tehran', 'gregorian');
 
 		$date->set('2009/1/2 01:00 PM');
@@ -116,7 +120,39 @@ class IntlDateTimeTestCase extends UnitTestCase {
 		$this->assertEqual($result, '۱۳۸۸/۱۱/۲۲ ۲۳:۵۰:۰۰');
 	}
 
-	function testGetTimestamp(){
+	function testModify() {
+		$date = new IntlDateTime('1388/04/01', 'Asia/Tehran', 'persian');
+		$date->modify('+1 month');
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '1388/05/01 00:00:00');
+
+		$date->set('1387/11/01');
+		$date->modify('+1 year');
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '1388/11/01 00:00:00');
+
+		$date->set('1387/11/01 03:45');
+		$date->modify('next year');
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '1388/11/01 03:45:00');
+
+		$date->set('1388/11/01');
+		$date->modify('-12 months');
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '1387/11/01 00:00:00');
+
+		$date->set('1386/12/01');
+		$date->modify('-4days +2years +3hours');
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '1388/11/27 03:00:00');
+
+		$date->set('1388/07/01');
+		$date->modify('+1hour +30days -1month');
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '1388/07/01 01:00:00');
+	}
+
+	function testGetTimestamp() {
 		$date = new IntlDateTime('2010/01/01');
 		$result = $date->getTimestamp();
 		$expected = strtotime('2010/01/01');
@@ -136,6 +172,13 @@ class IntlDateTimeTestCase extends UnitTestCase {
 		$date = new IntlDateTime($now);
 		$result = $date->getTimestamp();
 		$this->assertEqual($result, $now);
+	}
+
+	function testSetDate() {
+		$date = new IntlDateTime('yesterday');
+		$date->setDate(2009, 1, 15);
+		$result = $date->format('yyyy/MM/dd HH:mm:ss');
+		$this->assertEqual($result, '2009/01/15 00:00:00');
 	}
 }
 ?>
