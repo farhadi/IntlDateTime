@@ -56,7 +56,7 @@ class IntlDateTime extends DateTime {
 		$pattern = empty($options['pattern']) ? null : $options['pattern'];
 		return new IntlDateFormatter($locale . '@calendar=' . $calendar,
 				IntlDateFormatter::FULL,  IntlDateFormatter::FULL, $timezone,
-				IntlDateFormatter::GREGORIAN, $pattern);
+				$calendar == 'gregorian' ? IntlDateFormatter::GREGORIAN : IntlDateFormatter::TRADITIONAL, $pattern);
 	}
 
 	/**
