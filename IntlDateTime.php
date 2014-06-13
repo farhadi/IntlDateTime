@@ -329,7 +329,10 @@ class IntlDateTime extends DateTime {
 			$this->setTimezone($timezone);
 		}
 
-		$result = $this->getFormatter(array('timezone' => 'GMT'.parent::format('O'), 'pattern' => $pattern))->format($this->getTimestamp());
+		$result = $this->getFormatter(array(
+			'timezone' => 'GMT'.substr_replace(parent::format('O'), ':', -2, 0),
+			'pattern' => $pattern
+		))->format($this->getTimestamp());
 
 		if (isset($timezone)) {
 			$this->setTimezone($tempTimezone);
