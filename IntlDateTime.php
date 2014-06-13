@@ -1,8 +1,8 @@
 <?php
 /**
- * IntlDateTime is an extented version of php 5 DateTime class with integrated
+ * IntlDateTime is an extended version of php 5 DateTime class with integrated
  * IntlDateFormatter functionality which adds support for multible calendars
- * and locales provided by ICU project. (needs php >= 5.3.0 or PECL intl >= 1.0.0)
+ * and locales provided by ICU project. (needs php >= 5.3.0 with intl extension)
  * However, this class is not compatible with DateTime class because it uses ICU
  * pattern syntax for formatting and parsing date strings.
  * (@link http://userguide.icu-project.org/formatparse/datetime)
@@ -329,6 +329,8 @@ class IntlDateTime extends DateTime {
 			$this->setTimezone($timezone);
 		}
 
+		// Timezones DST data in ICU are not as accurate as PHP.
+		// So we get timezone offset from php and pass it to ICU.
 		$result = $this->getFormatter(array(
 			'timezone' => 'GMT'.substr_replace(parent::format('O'), ':', -2, 0),
 			'pattern' => $pattern
@@ -363,4 +365,3 @@ class IntlDateTime extends DateTime {
 		return $result;
 	}
 }
-?>
