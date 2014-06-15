@@ -332,7 +332,7 @@ class IntlDateTime extends DateTime {
 		// Timezones DST data in ICU are not as accurate as PHP.
 		// So we get timezone offset from php and pass it to ICU.
 		$result = $this->getFormatter(array(
-			'timezone' => 'GMT'.substr_replace(parent::format('O'), ':', -2, 0),
+			'timezone' => 'GMT' . (parent::format('Z') ? parent::format('P') : ''),
 			'pattern' => $pattern
 		))->format($this->getTimestamp());
 
