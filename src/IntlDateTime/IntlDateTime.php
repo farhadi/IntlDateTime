@@ -39,7 +39,7 @@ class IntlDateTime extends DateTime {
 	 * @param string $pattern the date pattern in which $time is formatted.
 	 * @return IntlDateTime
 	 */
-	public function __construct($time = null, $timezone = null, $calendar = 'persian', $locale = 'en_US', $pattern = null) {
+	public function __construct($time = null, $timezone = null, $calendar = 'gregorian', $locale = 'en_US', $pattern = null) {
 		if (!isset($timezone)) {
 			$timezone = new DateTimeZone(date_default_timezone_get());
 		} elseif (!is_a($timezone, 'DateTimeZone')) {
