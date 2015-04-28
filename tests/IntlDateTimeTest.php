@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . '/../IntlDateTime.php');
+require(__DIR__ . '/../src/IntlDateTime/IntlDateTime.php');
 
 class IntlDateTimeTest extends PHPUnit_Framework_TestCase {
 	function testCalendars() {
