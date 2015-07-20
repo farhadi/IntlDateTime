@@ -10,6 +10,13 @@
  * @copyright   Copyright 2010, Ali Farhadi (http://farhadi.ir/)
  * @license     GNU General Public License 3.0 (http://www.gnu.org/licenses/gpl.html)
  */
+namespace IntlDateTime;
+
+use DateTime;
+use DateTimeZone;
+use NumberFormatter;
+use IntlDateFormatter;
+
 class IntlDateTime extends DateTime {
 
 	/**
@@ -33,13 +40,18 @@ class IntlDateTime extends DateTime {
 	 * @return IntlDateTime
 	 */
 	public function __construct($time = null, $timezone = null, $calendar = 'gregorian', $locale = 'en_US', $pattern = null) {
-		if (!isset($timezone)) $timezone = new DateTimeZone(date_default_timezone_get());
-		elseif (!is_a($timezone, 'DateTimeZone')) $timezone = new DateTimeZone($timezone);
+		if (!isset($timezone)) {
+			$timezone = new DateTimeZone(date_default_timezone_get());
+		} elseif (!is_a($timezone, 'DateTimeZone')) {
+			$timezone = new DateTimeZone($timezone);
+		}
 
 		parent::__construct(null, $timezone);
 		$this->setLocale($locale);
 		$this->setCalendar($calendar);
-		if (isset($time)) $this->set($time, null, $pattern);
+		if (isset($time)) {
+			$this->set($time, null, $pattern);
+		}
 	}
 
 	/**
@@ -52,7 +64,9 @@ class IntlDateTime extends DateTime {
 		$locale = empty($options['locale']) ? $this->locale : $options['locale'];
 		$calendar = empty($options['calendar']) ? $this->calendar : $options['calendar'];
 		$timezone = empty($options['timezone']) ? $this->getTimezone() : $options['timezone'];
-		if (is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
+		if (is_a($timezone, 'DateTimeZone')) {
+			$timezone = $timezone->getName();
+		}
 		$pattern = empty($options['pattern']) ? null : $options['pattern'];
 		return new IntlDateFormatter($locale . '@calendar=' . $calendar,
 				IntlDateFormatter::FULL,  IntlDateFormatter::FULL, $timezone,
@@ -99,12 +113,18 @@ class IntlDateTime extends DateTime {
 				$separator = $match[4];
 				$pattern = 'dd' . $separator . 'LLL' . $separator;
 				$pattern .= strlen($match[5]) == 2 ? 'yy' : 'yyyy';
-				if (!empty($match[3])) $pattern = (preg_match('/,\s+$/', $match[3]) ? 'E, ' : 'E ') . $pattern;
+				if (!empty($match[3])) {
+					$pattern = (preg_match('/,\s+$/', $match[3]) ? 'E, ' : 'E ') . $pattern;
+				}
 			}
 			if (!empty($match[6])) {
 				$pattern .= !empty($match[8]) ? ' hh:mm' : ' HH:mm';
-				if (!empty($match[7])) $pattern .= ':ss';
-				if (!empty($match[8])) $pattern .= ' a';
+				if (!empty($match[7])) {
+					$pattern .= ':ss';
+				}
+				if (!empty($match[8])) {
+					$pattern .= ' a';
+				}
 			}
 			return $pattern;
 		}
@@ -211,7 +231,9 @@ class IntlDateTime extends DateTime {
 			}
 
 			$timezone = empty($timezone) ? $this->getTimezone() : $timezone;
-			if (is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
+			if (is_a($timezone, 'DateTimeZone')) {
+				$timezone = $timezone->getName();
+			}
 			$defaultTimezone = @date_default_timezone_get();
 			date_default_timezone_set($timezone);
 
@@ -250,7 +272,9 @@ class IntlDateTime extends DateTime {
 	 * @return IntlDateTime The modified DateTime.
 	 */
 	public function setTimezone($timezone) {
-		if (!is_a($timezone, 'DateTimeZone')) $timezone = new DateTimeZone($timezone);
+		if (!is_a($timezone, 'DateTimeZone')) {
+			$timezone = new DateTimeZone($timezone);
+		}
 		parent::setTimezone($timezone);
 		return $this;
 	}
@@ -312,7 +336,9 @@ class IntlDateTime extends DateTime {
 	public function modify($modify) {
 		$modify = $this->latinizeDigits(trim($modify));
 		$modify = preg_replace_callback('/(.*?)((?:[+-]?\d+)|next|last|previous)\s*(year|month)s?/i', array($this, 'modifyCallback'), $modify);
-		if ($modify) parent::modify($modify);
+		if ($modify) {
+			parent::modify($modify);
+		}
 		return $this;
 	}
 

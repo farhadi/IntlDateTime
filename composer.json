@@ -1,0 +1,28 @@
+{
+    "name": "samansystems/intldatetime",
+    "type": "library",
+    "description": "An extented version of php 5 DateTime class with integrated IntlDateFormatter functionality which adds support for multible calendars and locales provided by ICU project.",
+    "require": {
+        "php": ">=5.3.0",
+        "ext-intl": "*"
+    },
+    "keywords": [
+        "date",
+        "time",
+        "DateTime",
+        "jalali"
+    ],
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Mostafa Amiri",
+            "email": "m.amiri@sspk.co.ir"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "IntlDateTime": "src"
+        }
+    }
+}
