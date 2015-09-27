@@ -10,7 +10,10 @@
  * @copyright   Copyright 2010, Ali Farhadi (http://farhadi.ir/)
  * @license     GNU General Public License 3.0 (http://www.gnu.org/licenses/gpl.html)
  */
-class IntlDateTime extends DateTime {
+
+namespace farhadi;
+
+class IntlDateTime extends \DateTime {
 
 	/**
 	 * @var string The current locale in use
@@ -33,8 +36,8 @@ class IntlDateTime extends DateTime {
 	 * @return IntlDateTime
 	 */
 	public function __construct($time = null, $timezone = null, $calendar = 'gregorian', $locale = 'en_US', $pattern = null) {
-		if (!isset($timezone)) $timezone = new DateTimeZone(date_default_timezone_get());
-		elseif (!is_a($timezone, 'DateTimeZone')) $timezone = new DateTimeZone($timezone);
+		if (!isset($timezone)) $timezone = new \DateTimeZone(date_default_timezone_get());
+		elseif (!is_a($timezone, 'DateTimeZone')) $timezone = new \DateTimeZone($timezone);
 
 		parent::__construct(null, $timezone);
 		$this->setLocale($locale);
@@ -54,9 +57,9 @@ class IntlDateTime extends DateTime {
 		$timezone = empty($options['timezone']) ? $this->getTimezone() : $options['timezone'];
 		if (is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
 		$pattern = empty($options['pattern']) ? null : $options['pattern'];
-		return new IntlDateFormatter($locale . '@calendar=' . $calendar,
-				IntlDateFormatter::FULL,  IntlDateFormatter::FULL, $timezone,
-				$calendar == 'gregorian' ? IntlDateFormatter::GREGORIAN : IntlDateFormatter::TRADITIONAL, $pattern);
+		return new \IntlDateFormatter($locale . '@calendar=' . $calendar,
+				\IntlDateFormatter::FULL,  \IntlDateFormatter::FULL, $timezone,
+				$calendar == 'gregorian' ? \IntlDateFormatter::GREGORIAN : \IntlDateFormatter::TRADITIONAL, $pattern);
 	}
 
 	/**
@@ -67,11 +70,11 @@ class IntlDateTime extends DateTime {
 	 */
 	protected function latinizeDigits($str) {
 		$result = '';
-		$num = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
+		$num = new \NumberFormatter($this->locale, \NumberFormatter::DECIMAL);
 		preg_match_all('/.[\x80-\xBF]*/', $str, $matches);
 		foreach ($matches[0] as $char) {
 			$pos = 0;
-			$parsedChar = $num->parse($char, NumberFormatter::TYPE_INT32, $pos);
+			$parsedChar = $num->parse($char, \NumberFormatter::TYPE_INT32, $pos);
 			$result .= $pos ? $parsedChar : $char;
 		}
 		return $result;
@@ -250,7 +253,7 @@ class IntlDateTime extends DateTime {
 	 * @return IntlDateTime The modified DateTime.
 	 */
 	public function setTimezone($timezone) {
-		if (!is_a($timezone, 'DateTimeZone')) $timezone = new DateTimeZone($timezone);
+		if (!is_a($timezone, 'DateTimeZone')) $timezone = new \DateTimeZone($timezone);
 		parent::setTimezone($timezone);
 		return $this;
 	}
