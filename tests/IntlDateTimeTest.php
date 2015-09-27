@@ -1,6 +1,8 @@
 <?php
 require(__DIR__ . '/../IntlDateTime.php');
 
+use \farhadi\IntlDateTime;
+
 class IntlDateTimeTest extends PHPUnit_Framework_TestCase {
 	function testCalendars() {
 		$expected = strtotime('2010/01/13');
