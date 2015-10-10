@@ -1,7 +1,7 @@
 <?php
 /**
  * IntlDateTime is an extended version of php 5 DateTime class with integrated
- * IntlDateFormatter functionality which adds support for multible calendars
+ * IntlDateFormatter functionality which adds support for multiple calendars
  * and locales provided by ICU project. (needs php >= 5.3.0 with intl extension)
  * However, this class is not compatible with DateTime class because it uses ICU
  * pattern syntax for formatting and parsing date strings.
